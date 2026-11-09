@@ -127,7 +127,7 @@ Choices made while building. Each one is easy to change.
 9. **ePSF from the QR3 calibration files for QR2 images**, as the IRSA PSF tutorial recommends ("safe to just exchange the PSFs").
 10. **Sources**: a 2MASS Ks 8.56 star and a Ks 13.50 star chosen from one 0.5 degree field for being isolated (no 2MASS neighbour within 60 arcsec), a Gaia G 19.3 star from the same field (no Gaia source within 40 arcsec) to get low signal-to-noise points, NGC 4151 as a galaxy with a bright nucleus, and HD 189733 as a very bright star. Three kinds of source were wanted (a bright star, a galaxy and a faint source); the extra two show the saturated and the noise-limited ends. Each is covered by 223 to 305 QR2 images (the TAP query, counted in `run.json`).
 11. **Figures are PNG on a white surface**, light mode only; colours are set in `plot.py`.
-12. **MIT licence** for the code (`LICENSE`). Files under `results/` are derived from public IRSA, Gaia and SIMBAD data; see Data and acknowledgements.
+12. **MIT licence** for the code (`LICENSE`), held jointly by Milan Gorislavets and Kamilya Mukh. Files under `results/` are derived from public IRSA, Gaia and SIMBAD data; see Data and acknowledgements.
 
 ## Data and acknowledgements
 
