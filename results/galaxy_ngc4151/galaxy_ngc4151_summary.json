@@ -1,0 +1,29 @@
+{
+  "points": 296,
+  "clean": 55,
+  "warning": 238,
+  "DICHROIC": 3,
+  "FIT_ERROR": 0,
+  "clean_but_fit_ql_high": 55,
+  "clean_but_low_snr": 0,
+  "dichroic_flag_outside_d3_d4": 0,
+  "median_fit_ql_all": 40.655476416833565,
+  "median_fit_ql_clean": 40.9480987174404,
+  "thresholds": {
+    "fit_ql_max": 2.0,
+    "snr_min": 3.0
+  },
+  "bit_counts": {
+    "TRANSIENT": 76,
+    "OVERFLOW": 233,
+    "SUR_ERROR": 49,
+    "NONFUNC": 14,
+    "DICHROIC": 3,
+    "PERSIST": 5,
+    "SOURCE": 296,
+    "BLOOM": 17,
+    "HALO": 6,
+    "CONTAINS_BAD_PIXEL": 241
+  },
+  "input": "spectrum.csv"
+}

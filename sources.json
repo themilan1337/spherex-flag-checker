@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "star_bright_2mass_09591989p3000275",
+    "kind": "2mass",
+    "id": "09591989+3000275",
+    "role": "bright star (2MASS Ks 8.56), not saturated"
+  },
+  {
+    "slug": "galaxy_ngc4151",
+    "kind": "simbad",
+    "id": "NGC 4151",
+    "role": "galaxy (Seyfert 1 nucleus inside an extended host), fitted as a point source"
+  },
+  {
+    "slug": "star_faint_2mass_09590546p3012246",
+    "kind": "2mass",
+    "id": "09590546+3012246",
+    "role": "faint star (2MASS Ks 13.50)"
+  },
+  {
+    "slug": "star_faintest_gaia_743972413947537664",
+    "kind": "gaia",
+    "id": "743972413947537664",
+    "role": "very faint star (Gaia G 19.3)"
+  },
+  {
+    "slug": "star_verybright_hd189733",
+    "kind": "simbad",
+    "id": "HD 189733",
+    "role": "very bright star (2MASS Ks about 5.5), expected to saturate"
+  }
+]

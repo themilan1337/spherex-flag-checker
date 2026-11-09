@@ -1,0 +1,56 @@
+{
+  "slug": "star_faint_2mass_09590546p3012246",
+  "bands": [
+    {
+      "band": "J",
+      "mag_2mass": 14.116,
+      "expected_ujy": 3598.2,
+      "not_serious": {
+        "n": 11,
+        "median_ujy": 3790.5,
+        "mad_ujy": 66.9,
+        "ratio_to_2mass": 1.053
+      },
+      "clean_only": {
+        "n": 11,
+        "median_ujy": 3790.5,
+        "mad_ujy": 66.9,
+        "ratio_to_2mass": 1.053
+      }
+    },
+    {
+      "band": "H",
+      "mag_2mass": 13.574,
+      "expected_ujy": 3808.0,
+      "not_serious": {
+        "n": 11,
+        "median_ujy": 3977.2,
+        "mad_ujy": 108.0,
+        "ratio_to_2mass": 1.044
+      },
+      "clean_only": {
+        "n": 9,
+        "median_ujy": 3977.2,
+        "mad_ujy": 101.8,
+        "ratio_to_2mass": 1.044
+      }
+    },
+    {
+      "band": "Ks",
+      "mag_2mass": 13.496,
+      "expected_ujy": 2664.0,
+      "not_serious": {
+        "n": 7,
+        "median_ujy": 2724.1,
+        "mad_ujy": 30.2,
+        "ratio_to_2mass": 1.023
+      },
+      "clean_only": {
+        "n": 7,
+        "median_ujy": 2724.1,
+        "mad_ujy": 30.2,
+        "ratio_to_2mass": 1.023
+      }
+    }
+  ]
+}

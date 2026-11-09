@@ -1,0 +1,26 @@
+{
+  "uri": "ibe/data/spherex/qr2/level2/2026W16_2A/l2b-v24-2026-110/1/level2_2026W16_2A_0011_1D1_spx_l2b-v24-2026-110.fits",
+  "cutout_bytes": 5074560,
+  "cutout_shape": [
+    29,
+    29
+  ],
+  "x_offset": 377,
+  "y_offset": 1849,
+  "IMAGE": {
+    "identical": true
+  },
+  "FLAGS": {
+    "identical": true
+  },
+  "VARIANCE": {
+    "identical": true
+  },
+  "wavelength_um": {
+    "range_reader": 0.765521241930168,
+    "cutout": 0.765521241930168
+  },
+  "pixel_position_agrees": true,
+  "bytes_range_reader": 807840,
+  "all_identical": true
+}

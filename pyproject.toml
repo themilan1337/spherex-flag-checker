@@ -1,0 +1,44 @@
+[project]
+name = "spherex-flag-checker"
+version = "0.1.0"
+description = "Plot a SPHEREx Quick Release spectrum and sort its points by flag class, fit quality and flux uncertainty."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Milan Gorislavets" }, { name = "Kamilya Mukh" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "astropy>=6.1",
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "photutils>=2.0",
+    "pyvo>=1.6",
+]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6", "pypdf>=5"]
+
+[project.scripts]
+spherex-flags = "spherex_flags.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spherex_flags"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore::astropy.wcs.FITSFixedWarning",
+    "ignore::astropy.io.fits.verify.VerifyWarning",
+]
+pythonpath = ["tests"]

@@ -1,0 +1,28 @@
+{
+  "points": 226,
+  "clean": 205,
+  "warning": 20,
+  "DICHROIC": 1,
+  "FIT_ERROR": 0,
+  "clean_but_fit_ql_high": 1,
+  "clean_but_low_snr": 0,
+  "dichroic_flag_outside_d3_d4": 0,
+  "median_fit_ql_all": 1.0359753966331482,
+  "median_fit_ql_clean": 1.0575810670852661,
+  "thresholds": {
+    "fit_ql_max": 2.0,
+    "snr_min": 3.0
+  },
+  "bit_counts": {
+    "TRANSIENT": 14,
+    "SUR_ERROR": 12,
+    "NONFUNC": 6,
+    "DICHROIC": 1,
+    "COLD": 1,
+    "PERSIST": 1,
+    "SOURCE": 226,
+    "HALO": 6,
+    "CONTAINS_BAD_PIXEL": 21
+  },
+  "input": "tool_output_149.7728_30.2069.xml"
+}

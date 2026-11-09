@@ -1,0 +1,33 @@
+{
+  "slug": "star_bright_2mass_09591989p3000275",
+  "role": "bright star (2MASS Ks 8.56), not saturated",
+  "run_date_utc": "2026-10-16T22:58:59+00:00",
+  "seconds": 886,
+  "max_images": null,
+  "release_counts": {
+    "qr2": 223
+  },
+  "meta": {
+    "main_id": "2MASS J09591989+3000275",
+    "j_m": 8.876999855041504,
+    "h_m": 8.611000061035156,
+    "k_m": 8.562000274658203,
+    "gaia_source_id": 743996882375979648,
+    "ra_j2000_deg": 149.832886,
+    "dec_j2000_deg": 30.007641,
+    "pmra_masyr": -37.97190616110879,
+    "pmdec_masyr": -29.26089489416006
+  },
+  "queries": {
+    "irsa_tap_2mass": "SELECT designation, ra, dec, j_m, h_m, k_m FROM fp_psc WHERE designation = '09591989+3000275'",
+    "gaia_tap": "SELECT TOP 1 source_id, pmra, pmdec, phot_g_mean_mag FROM gaiadr3.gaia_source WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 149.83288600, 30.00764100, 0.00138889)) ORDER BY phot_g_mean_mag",
+    "irsa_tap_coverage": "SELECT a.uri, p.energy_bandpassname, p.time_bounds_lower, p.time_bounds_upper, p.provenance_version FROM spherex.artifact a JOIN spherex.plane p ON a.planeid = p.planeid WHERE 1 = CONTAINS(POINT('ICRS', 149.83288600, 30.00764100), p.poly) ORDER BY p.time_bounds_lower"
+  },
+  "images_in_query": 223,
+  "images_attempted": 223,
+  "points": 222,
+  "skipped_edge": 1,
+  "failed_downloads": [],
+  "bytes_received": 103302720,
+  "http_requests": 1555
+}

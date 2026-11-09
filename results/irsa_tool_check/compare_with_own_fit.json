@@ -1,0 +1,11 @@
+{
+  "tool_points": 226,
+  "own_points": 223,
+  "paired": 223,
+  "flags_identical": 222,
+  "flux_ratio_tool_over_own": {
+    "median": 0.9843482489371745,
+    "p10": 0.945011925752136,
+    "p90": 1.0396924633072258
+  }
+}

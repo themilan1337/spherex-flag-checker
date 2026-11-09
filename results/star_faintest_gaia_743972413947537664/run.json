@@ -1,0 +1,29 @@
+{
+  "slug": "star_faintest_gaia_743972413947537664",
+  "role": "very faint star (Gaia G 19.3)",
+  "run_date_utc": "2026-10-16T23:42:05+00:00",
+  "seconds": 313,
+  "max_images": null,
+  "release_counts": {
+    "qr2": 225
+  },
+  "meta": {
+    "main_id": "Gaia DR3 743972413947537664",
+    "g_mag": 19.33137321472168,
+    "ra_j2000_deg": 149.81969617806087,
+    "dec_j2000_deg": 29.94689081910851,
+    "pmra_masyr": 0.6240883443847328,
+    "pmdec_masyr": -0.31721482433212184
+  },
+  "queries": {
+    "gaia_tap": "SELECT source_id, ra, dec, pmra, pmdec, phot_g_mean_mag, ref_epoch FROM gaiadr3.gaia_source WHERE source_id = 743972413947537664",
+    "irsa_tap_coverage": "SELECT a.uri, p.energy_bandpassname, p.time_bounds_lower, p.time_bounds_upper, p.provenance_version FROM spherex.artifact a JOIN spherex.plane p ON a.planeid = p.planeid WHERE 1 = CONTAINS(POINT('ICRS', 149.81969618, 29.94689082), p.poly) ORDER BY p.time_bounds_lower"
+  },
+  "images_in_query": 225,
+  "images_attempted": 225,
+  "points": 225,
+  "skipped_edge": 0,
+  "failed_downloads": [],
+  "bytes_received": 104652000,
+  "http_requests": 1575
+}

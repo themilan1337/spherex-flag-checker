@@ -1,0 +1,6 @@
+slug,points,clean,warning,DICHROIC,FIT_ERROR,clean_but_fit_ql_high,clean_but_low_snr,dichroic_flag_outside_d3_d4,median_fit_ql_clean
+star_bright_2mass_09591989p3000275,222,63,157,2,0,37,0,0,2.0552777063023933
+galaxy_ngc4151,296,55,238,3,0,55,0,0,40.9480987174404
+star_faint_2mass_09590546p3012246,223,202,20,1,0,0,0,0,0.9244414725097376
+star_faintest_gaia_743972413947537664,225,160,63,2,0,0,44,0,0.8170894745957262
+star_verybright_hd189733,292,2,196,1,93,2,0,0,11.189109696231323

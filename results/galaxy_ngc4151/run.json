@@ -1,0 +1,29 @@
+{
+  "slug": "galaxy_ngc4151",
+  "role": "galaxy (Seyfert 1 nucleus inside an extended host), fitted as a point source",
+  "run_date_utc": "2026-10-16T23:21:29+00:00",
+  "seconds": 1526,
+  "max_images": null,
+  "release_counts": {
+    "qr2": 305
+  },
+  "meta": {
+    "main_id": "NGC  4151",
+    "otype": "Sy1",
+    "ra_j2000_deg": 182.63573325577997,
+    "dec_j2000_deg": 39.405850979869996,
+    "pmra_masyr": -0.206,
+    "pmdec_masyr": -0.163
+  },
+  "queries": {
+    "simbad_tap": "SELECT main_id, ra, dec, pmra, pmdec, otype FROM basic WHERE main_id = 'NGC 4151' OR main_id = '* NGC 4151'",
+    "irsa_tap_coverage": "SELECT a.uri, p.energy_bandpassname, p.time_bounds_lower, p.time_bounds_upper, p.provenance_version FROM spherex.artifact a JOIN spherex.plane p ON a.planeid = p.planeid WHERE 1 = CONTAINS(POINT('ICRS', 182.63573326, 39.40585098), p.poly) ORDER BY p.time_bounds_lower"
+  },
+  "images_in_query": 305,
+  "images_attempted": 305,
+  "points": 296,
+  "skipped_edge": 9,
+  "failed_downloads": [],
+  "bytes_received": 138090240,
+  "http_requests": 2081
+}

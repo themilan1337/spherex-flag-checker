@@ -1,0 +1,29 @@
+{
+  "slug": "star_verybright_hd189733",
+  "role": "very bright star (2MASS Ks about 5.5), expected to saturate",
+  "run_date_utc": "2026-10-16T23:31:04+00:00",
+  "seconds": 1285,
+  "max_images": null,
+  "release_counts": {
+    "qr2": 293
+  },
+  "meta": {
+    "main_id": "HD 189733",
+    "otype": "BY*",
+    "ra_j2000_deg": 300.18213726402,
+    "dec_j2000_deg": 22.71085365096,
+    "pmra_masyr": -3.208,
+    "pmdec_masyr": -250.323
+  },
+  "queries": {
+    "simbad_tap": "SELECT main_id, ra, dec, pmra, pmdec, otype FROM basic WHERE main_id = 'HD 189733' OR main_id = '* HD 189733'",
+    "irsa_tap_coverage": "SELECT a.uri, p.energy_bandpassname, p.time_bounds_lower, p.time_bounds_upper, p.provenance_version FROM spherex.artifact a JOIN spherex.plane p ON a.planeid = p.planeid WHERE 1 = CONTAINS(POINT('ICRS', 300.18213726, 22.71085365), p.poly) ORDER BY p.time_bounds_lower"
+  },
+  "images_in_query": 293,
+  "images_attempted": 293,
+  "points": 292,
+  "skipped_edge": 1,
+  "failed_downloads": [],
+  "bytes_received": 135861120,
+  "http_requests": 2045
+}
