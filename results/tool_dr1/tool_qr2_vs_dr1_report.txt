@@ -1,0 +1,7 @@
+tool_QR2: 226 points; tool_DR1: 241 points (paired by obs id and detector).
+Paired: 225. Flags identical: 212. Flags changed: 13.
+Only in tool_QR2: 1. Only in tool_DR1: 16.
+Classes tool_QR2: clean 205, warning 20, DICHROIC 1, FIT_ERROR 0.
+Classes tool_DR1: clean 213, warning 27, DICHROIC 1, FIT_ERROR 0.
+Bits gained in tool_DR1 (points): CONTAINS_BAD_PIXEL 5, HALO 11, NONFUNC 2.
+Class changes of paired points: clean -> warning 5.

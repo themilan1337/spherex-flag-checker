@@ -1,0 +1,65 @@
+{
+  "old_label": "tool_QR2",
+  "new_label": "tool_DR1",
+  "pairing": "obs id and detector",
+  "old_points": 226,
+  "new_points": 241,
+  "paired": 225,
+  "flags_identical": 212,
+  "flags_changed": 13,
+  "only_old": 1,
+  "only_new": 16,
+  "classes_old": {
+    "clean": 205,
+    "warning": 20,
+    "DICHROIC": 1,
+    "FIT_ERROR": 0
+  },
+  "classes_new": {
+    "clean": 213,
+    "warning": 27,
+    "DICHROIC": 1,
+    "FIT_ERROR": 0
+  },
+  "class_transitions": {
+    "clean -> warning": 5
+  },
+  "bits_gained": {
+    "CONTAINS_BAD_PIXEL": 5,
+    "HALO": 11,
+    "NONFUNC": 2
+  },
+  "bits_lost": {},
+  "bits_old": {
+    "COLD": 1,
+    "CONTAINS_BAD_PIXEL": 21,
+    "DICHROIC": 1,
+    "HALO": 6,
+    "NONFUNC": 6,
+    "PERSIST": 1,
+    "SOURCE": 226,
+    "SUR_ERROR": 12,
+    "TRANSIENT": 14
+  },
+  "bits_new": {
+    "COLD": 1,
+    "CONTAINS_BAD_PIXEL": 28,
+    "DICHROIC": 1,
+    "HALO": 19,
+    "NONFUNC": 8,
+    "PERSIST": 1,
+    "SOURCE": 241,
+    "SUR_ERROR": 13,
+    "TRANSIENT": 15
+  },
+  "bits_only_in_new": [],
+  "bits_only_in_old": [],
+  "wavelength_shift_um_max_abs": 0.0004391670227050781,
+  "flux_ratio_new_over_old": {
+    "median": 0.9993346703390719,
+    "p10": 0.9676997680228472,
+    "p90": 1.0203463696885873
+  },
+  "old_input": "tool_output_149.7728_30.2069.xml",
+  "new_input": "tool_output_149.7728_30.2069_dr1.xml"
+}

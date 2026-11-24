@@ -1,0 +1,38 @@
+{
+  "pairing": "obs id and detector",
+  "aperture_radius_pixels": 2.5,
+  "points": [
+    {
+      "obsid": "2026W18_1A_0385_4",
+      "detector": 5,
+      "wavelength_um": 4.209800420763444,
+      "own_flags": 4297195520,
+      "tool_flags": 2097152,
+      "own_only_bits": [
+        "PERSIST",
+        "CONTAINS_BAD_PIXEL"
+      ],
+      "tool_only_bits": [],
+      "own_position_pixel": [
+        211.37213467005512,
+        693.0827512715956
+      ],
+      "tool_position_pixel": [
+        211.43333435058594,
+        693.0783081054688
+      ],
+      "position_difference_pixels": 0.06136075799976119,
+      "pixels_with_own_only_bits": {
+        "PERSIST": [
+          {
+            "dx_from_own": -1.372134670055118,
+            "dy_from_own": -2.082751271595612,
+            "distance_from_own_position": 2.4941143542549136,
+            "distance_from_tool_position": 2.524640953051882
+          }
+        ],
+        "CONTAINS_BAD_PIXEL": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+own_fit_QR2: 223 points; own_fit_DR1: 238 points (paired by obs id and detector).
+Paired: 222. Flags identical: 211. Flags changed: 11.
+Only in own_fit_QR2: 1. Only in own_fit_DR1: 16.
+Classes own_fit_QR2: clean 202, warning 20, DICHROIC 1, FIT_ERROR 0.
+Classes own_fit_DR1: clean 211, warning 26, DICHROIC 1, FIT_ERROR 0.
+Bits gained in own_fit_DR1 (points): CONTAINS_BAD_PIXEL 4, HALO 10, NONFUNC 1.
+Class changes of paired points: clean -> warning 4.

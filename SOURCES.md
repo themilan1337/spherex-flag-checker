@@ -101,3 +101,58 @@ Not used by this folder, so no acknowledgement was taken: MAST/TESS and the NASA
 No real Tool output file was found in public sources on 2026-10-18. Searched: the web (two searches, queries on Spectrophotometry Tool output files, `.xml`/VOTable examples, `irsa-tutorials`, `spherex-archive-documentation`); the Tool help page https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html (describes the saved XML and the "Prepare Download" route, shows screenshots only); the January 2025 AAS page https://irsa.ipac.caltech.edu/data/SPHEREx/AASJan2025/ (simulated-data photometry Parquet file, not Tool output); the irsa-tutorials pages https://caltech-ipac.github.io/irsa-tutorials/spherex-mosaic/ and `.../spherex-psf/` (mosaic and PSF tutorials, no saved Tool spectrum). Not done: a file-by-file listing of the two GitHub repositories (the GitHub API was not reachable from this session), so a stray `.xml` in a repository tree cannot be excluded. The `inspect` command is meant for a real Tool output file, which this repository does not contain.
 
 Update 2026-11-09: a real file was made by running the Tool by hand in the browser (https://irsa.ipac.caltech.edu/applications/spherex/, Spectrophotometry Tool, single object "149.7728 30.2069 equ j2000", point-source model, default options; the job finished after roughly 13 minutes, then Prepare Download gave a zip with a README and one VOTable). It is saved as `results/irsa_tool_check/tool_output_149.7728_30.2069.xml`; see README Results item 7.
+
+## 9. The DR1 (R7) reprocessing and the second Tool check (2026-11-19)
+
+Done on 2026-11-19 (UTC) to prepare the comparison of the Spectrophotometry Tool's flags before and after the DR1 reprocessing. Method: Perplexity MCP as a lead (two queries, below), then every fact read on the IRSA page itself with `curl` (saved outside the repository, not committed). Built-in WebSearch and WebFetch were not used.
+
+### 9a. What the reprocessing is and when it came out
+
+| URL | Used for | Verified |
+|---|---|---|
+| https://irsa.ipac.caltech.edu/news.html | "November 12, 2026: SPHEREx DR1. SPHEREx Data Release 1 (DR1) is now available at IRSA. DR1 includes reprocessed spectral images that form a uniformly processed dataset with Quick Release 3 (QR3). It also includes an all-sky spectral cube covering 102 spectral channels"; "September 16, 2026: SPHEREx QR3 ... The SPHEREx Spectrophotometry Tool has also been updated to use the improved calibrations" | primary page, text read |
+| https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_dr1.html | "IRSA released SPHEREx Data Release 1 (DR1) in November 2026. DR1 includes reprocessed versions of the QR2 spectral images"; DOIs 10.26131/IRSA678 (DR1 spectral images) and 10.26131/IRSA679 (all-sky cube); directory `/ibe/data/spherex/dr1/level2` | primary page, text read |
+| https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_qr.html | "With the release of DR1, QR2 data are no longer returned in IRSA or VO searches, but remain available for direct download through February 2027" | primary page, text read |
+| https://irsa.ipac.caltech.edu/data/SPHEREx/docs/SPHEREx_Expsupp.pdf | SSDC-DP-017 **Version 2.1, 2026-11-10** (84 pages, 30 MB, `Last-Modified: Tue, 10 Nov 2026`). Change record: "2.0, 2026-08-25: Major update for pipeline version R7. Includes significant updates to the following modules: Persistence Masks, Bad Pixel Flagging, Fine Astrometry, Outliers Pixel Detection, Zodi Prediction, Photometric Measurements, Point Spread Function, Spectral Channels". Sect. 2.1 (p. 11): the Year 1 reprocessing "produced the DR1 products ... pipeline versions R7.0 and up"; images made with R7 "are labeled as DR1 for reprocessed survey 1 and 2 data and QR3 for survey 3 and 4 data"; "The spectrophotometry tool has been updated to apply the new gain calibrations to QR2 data." Sect. 3.2.4 (pp. 30-32, persistence masks) and Table 16 (pp. 33-35, 23 pixel flags) | text extracted with `pypdf`, pages read |
+| https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html | the Tool help page, `Last-Modified: Thu, 12 Nov 2026 18:20:34 GMT` (59 130 bytes; 58 917 bytes on 2026-10-16). The only text change found: "The primary data come from the SPHEREx Quick Release Spectral Images (version 2 or 3)". No mention of DR1 or R7. Its flag table is unchanged (checked by `scripts/verify_flags_against_docs.py`, below) | primary page, text and table read |
+
+The reprocessing with pipeline R7 is DR1 (Supplement Sect. 2.1: Year 1, that is surveys 1 and 2, is DR1). The images of the 2MASS J09590546+3012246 position end in survey 2 (2026W19).
+
+Perplexity (leads only): `perplexity_search` "IRSA SPHEREx reprocessed data release pipeline R7 first 16 months Quick Release" returned third-party GitHub projects that mention "Data Release 1" next to QR3, which pointed to the DR1 name; `perplexity_ask` on what R7 changed in the Tool output and flags answered that the IRSA documentation available to it did not describe R7 and that no Tool API is documented. It cited the IRSA pages above, which were then read directly. Its "no documented API" answer matches section 3a and was not used as evidence.
+
+### 9b. Checks run against the current documents
+
+- `uv run python scripts/verify_flags_against_docs.py` on 2026-11-19, against the help page of 12 November and Supplement v2.1: `Supplement Version 2.1, 2026-11-10; Table 16 on pages 33 to 35`, `FIT_ERROR appears in the Supplement: False`, `OK: 25 visible help rows, 5 hidden rows, 23 Table 16 rows match the code`. The script now finds Table 16 by its caption, because it moved from pages 31-33 (v2.0) to pages 33-35 (v2.1).
+- IRSA TAP on 2026-11-19, the same coverage query as in 3b for the position of 2MASS J09590546+3012246: 240 images, all `dr1`, pipeline version 7.0.5, the last one 2026W19_2A. On 2026-10-16 the same query returned 225 `qr2` images.
+- The public S3 bucket `nasa-irsa-spherex`, listing with prefix `dr1/epsf/`: the ePSF files carry the same version tags as `qr3/epsf/` (`cal-epsf-v1-2026-191`, `cal-epsf-v2-2026-191`), so `scripts/fetch_epsf.py` serves DR1 images as well.
+- The FLAGS extension of a DR1 image is tile-compressed (RICE_1, one row per tile, `ZIMAGE = T` in the header read from `ibe/data/spherex/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0306_1D1_spx_l2b-v27-2026-196.fits`), where the QR2 FLAGS extension was a plain 32-bit image. The first DR1 extraction failed on all 238 readable images for that reason (`ValueError: operands could not be broadcast together with shapes (15,15) (15,0)`); `RemoteMEF.read_compressed_band` now reads it.
+- Context7, `/astropy/astropy`: reading a tile-compressed image through `fits.open(...)[1].data` returns the decompressed numpy array; `CompImageHDU` tiles are one row by default (docs: `usage/unfamiliar.rst`, `appendix/history.rst`, `CHANGES.rst` v5.3 for `tile_shape`). The reader builds a small compressed HDU from the wanted rows and lets astropy decompress it (the FITS standard layout of the table and heap, Sect. 10.1).
+
+### 9c. The one point where the own fit and the Tool disagreed
+
+`uv run python scripts/explain_flag_difference.py results/star_faint_2mass_09590546p3012246/spectrum.csv results/irsa_tool_check/tool_output_149.7728_30.2069.xml results/irsa_tool_check/flag_difference.json` (one range read of the FLAGS plane of the QR2 image `2026W18_1A_0385_4`, detector 5). Result in `results/irsa_tool_check/flag_difference.json`: one PERSIST pixel, 2.494 pixels from the position of the own fit and 2.525 pixels from the position in the Tool file (`x_image`, `y_image`); the circle of the own fit has radius 2.5.
+
+### 9d. The Tool itself
+
+Not run by the tooling that prepared this section. The Tool is a browser job in IRSA's web application (a form submission to a third-party service), so a person runs it; the 9 November file was made that way (section 8). `spherex-flags compare` reads the new file once it exists. No programmatic interface to the Tool is documented (3a, and the `perplexity_ask` answer in 9a).
+
+### 9e. The DR1 own-fit preview (2026-11-19)
+
+Commands and outputs are in README Results item 8: `scripts/run_sources.py --results-dir results/dr1_preview` (IRSA TAP coverage query, 240 DR1 images, pipeline 7.0.5; range reads of the public image files; ePSF files from the `qr3/epsf/` calibration set, the same as for QR2) and `spherex-flags compare`. Files: `results/dr1_preview/star_faint_2mass_09590546p3012246/{spectrum.csv,run.json}` and `results/dr1_preview/own_fit_qr2_vs_dr1_*`. These are the repository's own fit, not Tool output. The Tool run for DR1 was not made by this tooling (9d) and is a hand step. Web search tool use: none beyond the Perplexity queries in 9a.
+
+## 9f. Second check for a programmatic route to the Tool (2026-11-24)
+
+Question: can the hand run of the Spectrophotometry Tool be replaced by a documented public API call? Answer: no. Read on 24 Nov with `curl` (saved outside the repository): the Data Explorer help pages are served at `https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/<page>.html`.
+
+| URL | What it says | Verified |
+|---|---|---|
+| .../spherex/api.html | The Data Explorer API is one URL pattern, `https://irsa.ipac.caltech.edu/applications/spherex/?api=spectral-images&...`, that opens or runs a Spectral Image search in the browser; there is no parameter for the Spectrophotometry Tool | page text read |
+| .../spherex/downloads.html | Job Monitor: "the spectrophotometry tool is type = UWS -- UWS is Universal Worker Service"; two running jobs per user; jobs older than 2 weeks disappear. It describes the web app's job handling and gives no endpoint or client | page text read |
+| .../spherex/sp.html | The Tool "performs forced photometry" with The Tractor, point-source or Sersic model, run from the web app; results are saved as a VOTable through "Prepare Download"; the output has a `data_collection` column (`qr2`, `qr3` or `dr1`). No API section | page text read |
+| https://irsa.ipac.caltech.edu/TAP/tables | `spherex.*` tables: `spherex`, `artifact`, `obscore`, `observation`, `plane`, `provenance_input`. Images and provenance only, no spectra | listing read |
+| irsa-tutorials, `tutorials/spherex/` (GitHub) | intro, cutouts, hipscube, mosaic, psf, source_discovery. The hipscube notebook says the Tool should be used for scientific spectra; the psf notebook shows how to use the ePSF in Tractor and warns that results can differ from the Tool | files read |
+| astroquery `Irsa` docs and repository | `query_sia`, `query_tap`, `query_region`, MOST (which lists SPHEREx frames). No Spectrophotometry Tool method (code search for "spectrophotometry" and "spherex" finds only keyword lists and the MOST page) | search results read |
+
+Perplexity (a lead only): `perplexity_search` and `perplexity_ask` on a programmatic route to the Tool. Both found only the pages above and said no documented route exists. One sentence in its answer ("extracted spectra will be available via the API in a future version") comes from a Spitzer Heritage Archive release note on the IRSA news page, not from SPHEREx, and was not used. Web search tool use: none beyond Perplexity.
+
+Not done, on purpose: calling the undocumented endpoints behind the web app's UWS jobs. They are not documented as a public interface, and the run is a form submission to a third-party service. A Tractor fit on the public images would be this repository's own fit again (README Results item 8) and would not show what the Tool outputs. So the run was a hand step in the browser.

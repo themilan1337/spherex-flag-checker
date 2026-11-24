@@ -111,3 +111,44 @@ def test_row_band_is_clipped_to_the_image(mef_bytes):
     mef = RemoteMEF("http://fake/x.fits", FakeHttp(blob))
     band = mef.read_band("IMAGE", -3, NY + 10)
     assert band.shape == (NY, NX)
+
+
+def compressed_flags_blob(flags: np.ndarray) -> bytes:
+    """A SPHEREx-like file whose FLAGS extension is RICE_1 compressed, one row per tile (as in QR3 and DR1)."""
+    image = np.zeros(flags.shape, dtype=">f4")
+    hdul = fits.HDUList(
+        [
+            fits.PrimaryHDU(),
+            fits.ImageHDU(image, name="IMAGE"),
+            fits.CompImageHDU(
+                flags.astype("i4"), name="FLAGS", compression_type="RICE_1", tile_shape=(1, flags.shape[1])
+            ),
+            fits.ImageHDU(image, name="VARIANCE"),
+        ]
+    )
+    buf = io.BytesIO()
+    hdul.writeto(buf)
+    return buf.getvalue()
+
+
+def test_compressed_flags_rows_equal_what_astropy_reads():
+    rng = np.random.default_rng(11)
+    flags = np.where(rng.random((NY, NX)) < 0.2, rng.integers(1, 2**30, size=(NY, NX)), 0).astype("i4")
+    flags[20, 30] = 2097152 | 131072
+    blob = compressed_flags_blob(flags)
+    http = FakeHttp(blob)
+    mef = RemoteMEF("http://fake/x.fits", http)
+    band = mef.read_band("FLAGS", 15, 30)
+    assert band.dtype.byteorder in ("=", "|") and np.array_equal(band, flags[15:30])
+    cut = mef.read_cutout("FLAGS", 25, 40, 15, 30)
+    assert np.array_equal(cut, flags[15:30, 25:40])
+    assert http.bytes_received < len(blob)  # the compressed rows only, not the whole file
+
+
+def test_compressed_flags_edge_rows_and_clipping():
+    flags = (np.arange(NY * NX, dtype="i4") % 1000).reshape(NY, NX)
+    mef = RemoteMEF("http://fake/x.fits", FakeHttp(compressed_flags_blob(flags)))
+    assert np.array_equal(mef.read_band("FLAGS", 0, 3), flags[0:3])
+    assert np.array_equal(mef.read_band("FLAGS", NY - 2, NY + 10), flags[NY - 2 :])  # clipped to the image
+    with pytest.raises(ValueError):
+        mef.read_band("FLAGS", NY, NY + 5)

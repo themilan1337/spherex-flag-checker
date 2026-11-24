@@ -1,5 +1,5 @@
-"""Command line: ``spherex-flags check`` (plot and sort a spectrum), ``flags`` (print the documented table),
-``inspect`` (describe a table),
+"""Command line: ``spherex-flags check`` (plot and sort a spectrum), ``compare`` (which flags changed between
+two runs of one source), ``flags`` (print the documented table), ``inspect`` (describe a table),
 ``extract`` (own point-source extraction from public Quick Release images; needs the network)."""
 
 from __future__ import annotations
@@ -83,6 +83,28 @@ def run_check(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_compare(args: argparse.Namespace) -> int:
+    from .compare import compare_tables, format_report
+
+    try:
+        old, new = read_spectrum(args.old), read_spectrum(args.new)
+        summary, changes = compare_tables(old, new, args.old_label, args.new_label)
+    except (MissingFlags, MissingColumns) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    summary |= {"old_input": Path(args.old).name, "new_input": Path(args.new).name}
+    out = Path(args.out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    name = args.name or f"{args.old_label}_vs_{args.new_label}"
+    changes.write(out / f"{name}_changes.csv", format="ascii.csv", overwrite=True)
+    (out / f"{name}_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    report = format_report(summary)
+    (out / f"{name}_report.txt").write_text(report + "\n")
+    print(report)
+    print(f"-> {out}")
+    return 0
+
+
 def run_inspect(args: argparse.Namespace) -> int:
     """Describe a table without requiring the documented columns (for a file whose layout is unknown)."""
     import numpy as np
@@ -142,6 +164,15 @@ def main(argv: list[str] | None = None) -> int:
     check.add_argument("--snr-min", type=float, default=DEFAULT_SNR_MIN)
     check.add_argument("--logy", action="store_true", help="logarithmic flux axis")
     check.set_defaults(func=run_check)
+
+    compare = sub.add_parser("compare", help="which flags changed between two runs of the same source")
+    compare.add_argument("old", help="the earlier spectrum table (for example the Tool file before a reprocessing)")
+    compare.add_argument("new", help="the later spectrum table")
+    compare.add_argument("--old-label", default="old")
+    compare.add_argument("--new-label", default="new")
+    compare.add_argument("--out-dir", default="results/compare")
+    compare.add_argument("--name", help="prefix of the output files (default: <old-label>_vs_<new-label>)")
+    compare.set_defaults(func=run_compare)
 
     inspect = sub.add_parser("inspect", help="list the columns, dtypes and null counts of a table")
     inspect.add_argument("input", help="any table astropy can read (VOTable .xml/.vot, .csv, .ecsv, .fits)")

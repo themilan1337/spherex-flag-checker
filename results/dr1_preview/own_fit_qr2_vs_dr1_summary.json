@@ -1,0 +1,63 @@
+{
+  "old_label": "own_fit_QR2",
+  "new_label": "own_fit_DR1",
+  "pairing": "obs id and detector",
+  "old_points": 223,
+  "new_points": 238,
+  "paired": 222,
+  "flags_identical": 211,
+  "flags_changed": 11,
+  "only_old": 1,
+  "only_new": 16,
+  "classes_old": {
+    "clean": 202,
+    "warning": 20,
+    "DICHROIC": 1,
+    "FIT_ERROR": 0
+  },
+  "classes_new": {
+    "clean": 211,
+    "warning": 26,
+    "DICHROIC": 1,
+    "FIT_ERROR": 0
+  },
+  "class_transitions": {
+    "clean -> warning": 4
+  },
+  "bits_gained": {
+    "CONTAINS_BAD_PIXEL": 4,
+    "HALO": 10,
+    "NONFUNC": 1
+  },
+  "bits_lost": {},
+  "bits_old": {
+    "CONTAINS_BAD_PIXEL": 21,
+    "DICHROIC": 1,
+    "HALO": 6,
+    "NONFUNC": 6,
+    "PERSIST": 2,
+    "SOURCE": 223,
+    "SUR_ERROR": 11,
+    "TRANSIENT": 13
+  },
+  "bits_new": {
+    "CONTAINS_BAD_PIXEL": 27,
+    "DICHROIC": 1,
+    "HALO": 18,
+    "NONFUNC": 7,
+    "PERSIST": 2,
+    "SOURCE": 238,
+    "SUR_ERROR": 12,
+    "TRANSIENT": 14
+  },
+  "bits_only_in_new": [],
+  "bits_only_in_old": [],
+  "wavelength_shift_um_max_abs": 0.006420124744126454,
+  "flux_ratio_new_over_old": {
+    "median": 0.9932228463427746,
+    "p10": 0.9609631728800878,
+    "p90": 1.032690775845777
+  },
+  "old_input": "spectrum.csv",
+  "new_input": "spectrum.csv"
+}

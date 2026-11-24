@@ -2,9 +2,12 @@
 
     uv run python scripts/run_sources.py                 # all sources (about 10 min each)
     uv run python scripts/run_sources.py --only galaxy_ngc4151 --max-images 20   # quick test
+    uv run python scripts/run_sources.py --only star_faint_2mass_09590546p3012246 --results-dir results/dr1_preview
 
 Needs the six ePSF files in data/cache/epsf (``scripts/fetch_epsf.py``). Writes
-results/<slug>/spectrum.csv and results/<slug>/run.json (every query, counts, bytes, date).
+<results-dir>/<slug>/spectrum.csv and <results-dir>/<slug>/run.json (every query, counts, bytes, date).
+The IRSA coverage query returns whatever releases cover the position on the day it runs (QR2 on
+2026-10-16; DR1, the R7 reprocessing, since 12 November 2026), so a re-run on a later day measures other images.
 """
 
 from __future__ import annotations
@@ -57,6 +60,7 @@ def main() -> None:
     parser.add_argument("--only", help="slug of one source")
     parser.add_argument("--max-images", type=int, default=None)
     parser.add_argument("--workers", type=int, default=5)
+    parser.add_argument("--results-dir", default="results", help="folder below the repository root (default: results)")
     args = parser.parse_args()
 
     entries = json.loads((ROOT / "sources.json").read_text())
@@ -74,7 +78,7 @@ def main() -> None:
             workers=args.workers,
             max_images=args.max_images,
         )
-        out = ROOT / "results" / entry["slug"]
+        out = ROOT / args.results_dir / entry["slug"]
         out.mkdir(parents=True, exist_ok=True)
         table.write(out / "spectrum.csv", format="csv", overwrite=True)
         run = {

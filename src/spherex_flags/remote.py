@@ -186,9 +186,15 @@ class RemoteMEF:
 
     # -- data -----------------------------------------------------------------------------------
     def read_band(self, name: str, y0: int, y1: int) -> np.ndarray:
-        """Rows ``y0:y1`` (0-based, y1 exclusive) of the 2-D image HDU ``name``, all columns."""
+        """Rows ``y0:y1`` (0-based, y1 exclusive) of the 2-D image HDU ``name``, all columns.
+
+        A tile-compressed image (the FLAGS extension of the QR3 and DR1 files, RICE_1, one row per tile) is read
+        by fetching only the compressed bytes of those rows (``read_compressed_band``).
+        """
         hdu = self.hdu(name)
         hdr = hdu.header
+        if hdr.get("ZIMAGE"):
+            return self.read_compressed_band(hdu, y0, y1)
         if hdr["NAXIS"] != 2:
             raise ValueError(f"HDU {name} is not a 2-D image")
         if "BSCALE" in hdr or "BZERO" in hdr:
@@ -203,6 +209,54 @@ class RemoteMEF:
         raw = self.http.get(self.url, hdu.data_start + y0 * nx * bytepix, (y1 - y0) * nx * bytepix)
         dtype = {-32: ">f4", -64: ">f8", 32: ">i4", 16: ">i2", 8: "u1"}[int(hdr["BITPIX"])]
         return np.frombuffer(raw, dtype=dtype).reshape(y1 - y0, nx).astype(dtype.replace(">", "="))
+
+    def read_compressed_band(self, hdu: HduLayout, y0: int, y1: int) -> np.ndarray:
+        """Rows ``y0:y1`` of a tile-compressed image whose tiles are single rows (FITS standard, Sect. 10.1).
+
+        The table rows hold (length, offset) pairs into the heap that follows the table. Only the pairs of the
+        wanted rows and their compressed bytes are fetched. They are put into a small compressed HDU of the same
+        kind, which astropy decompresses, so no decompression code lives here.
+        """
+        hdr = hdu.header
+        nx, ny = int(hdr["ZNAXIS1"]), int(hdr["ZNAXIS2"])
+        if int(hdr["ZNAXIS"]) != 2 or int(hdr.get("ZTILE1", nx)) != nx or int(hdr.get("ZTILE2", 1)) != 1:
+            raise NotImplementedError("only compressed images with one row per tile are read")
+        if int(hdr["TFIELDS"]) != 1:
+            raise NotImplementedError("compressed images with scaling columns are not handled")
+        y0, y1 = max(0, y0), min(ny, y1)
+        if y1 <= y0:
+            raise ValueError("empty row band")
+        wide = "Q" in str(hdr["TFORM1"]).upper()  # 64-bit descriptors
+        width = 16 if wide else 8
+        if int(hdr["NAXIS1"]) != width:
+            raise NotImplementedError("unexpected table row width in a compressed image")
+        raw = self.http.get(self.url, hdu.data_start + y0 * width, (y1 - y0) * width)
+        desc = np.frombuffer(raw, dtype=">i8" if wide else ">i4").reshape(-1, 2).astype(np.int64)
+        heap_start = hdu.data_start + int(hdr.get("THEAP", width * int(hdr["NAXIS2"])))
+        first, last = int(desc[:, 1].min()), int((desc[:, 1] + desc[:, 0]).max())
+        heap = self.http.get(self.url, heap_start + first, last - first)
+        new = fits.Header()
+        new["XTENSION"] = "BINTABLE"
+        new["BITPIX"] = 8
+        new["NAXIS"] = 2
+        new["NAXIS1"] = width
+        new["NAXIS2"] = len(desc)
+        new["PCOUNT"] = len(heap)
+        new["GCOUNT"] = 1
+        new["TFIELDS"] = 1
+        new["TTYPE1"] = hdr["TTYPE1"]
+        new["TFORM1"] = hdr["TFORM1"]
+        for card in hdr.cards:  # ZIMAGE, ZBITPIX, ZCMPTYPE, ZNAME1, ZVAL1, ...
+            if card.keyword.startswith("Z") and card.keyword not in ("ZNAXIS2", "ZPCOUNT"):
+                new[card.keyword] = card.value
+        new["ZNAXIS2"] = len(desc)
+        table = np.stack([desc[:, 0], desc[:, 1] - first], axis=1).astype(">i8" if wide else ">i4").tobytes()
+        body = table + heap
+        body += b"\0" * (-len(body) % BLOCK)
+        blob = fits.PrimaryHDU().header.tostring().encode("ascii") + new.tostring().encode("ascii") + body
+        with fits.open(io.BytesIO(blob)) as hdul:
+            data = np.array(hdul[1].data)
+        return data.astype(data.dtype.newbyteorder("="))
 
     def read_cutout(self, name: str, x0: int, x1: int, y0: int, y1: int) -> np.ndarray:
         band = self.read_band(name, y0, y1)

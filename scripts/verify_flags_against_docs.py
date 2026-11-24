@@ -4,9 +4,11 @@
 
 Downloads (into data/raw, which is not committed):
   * the IRSA help page   https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html
-  * the Explanatory Supplement PDF   https://irsa.ipac.caltech.edu/data/SPHEREx/docs/SPHEREx_Expsupp_QR.pdf
+  * the Explanatory Supplement PDF   https://irsa.ipac.caltech.edu/data/SPHEREx/docs/SPHEREx_Expsupp.pdf
 and compares (1) the visible rows of the help table, (2) the commented-out rows, (3) Supplement Table 16
-(printed pages 31-33) and (4) the CONTAINS_BAD_PIXEL / masking lists on Supplement p. 43 with the code.
+and (4) the CONTAINS_BAD_PIXEL / masking lists of Sect. 3.3 with the code. The page numbers of Table 16 and
+Sect. 3.3 move between versions of the Supplement (v2.0: pp. 31-33 and 43; v2.1: pp. 33-35 and 44-45), so the
+script finds them by their captions.
 Exits with status 1 and prints every difference. Needs the network.
 """
 
@@ -23,7 +25,8 @@ from spherex_flags import flags as F
 
 RAW = Path(__file__).resolve().parents[1] / "data/raw"
 HELP_URL = "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html"
-PDF_URL = "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/SPHEREx_Expsupp_QR.pdf"
+PDF_URL = "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/SPHEREx_Expsupp.pdf"
+PDF_NAME = "SPHEREx_Expsupp.pdf"
 
 ROW = re.compile(
     r"<tr><td>\s*([A-Z_]+)\s*</td><td>.*?</td><td>\s*1 &lt;&lt; (\d+)</td>.*?<td>\s*(\d+)</td>",
@@ -52,10 +55,21 @@ def help_rows(html: str) -> tuple[dict[str, tuple[int, int]], dict[str, tuple[in
     return visible, hidden
 
 
-def supplement_table16(pdf: Path) -> dict[str, int]:
-    """Name -> bit from printed pages 31-33 (PDF pages 31-33, the page labels match)."""
-    reader = pypdf.PdfReader(str(pdf))
-    text = "\n".join(reader.pages[i].extract_text() or "" for i in (30, 31, 32))
+def page_texts(reader: pypdf.PdfReader) -> list[str]:
+    return [page.extract_text() or "" for page in reader.pages]
+
+
+def table16_pages(texts: list[str]) -> list[int]:
+    """0-based indices of the pages that carry Table 16: from its caption to the next section heading."""
+    caption = "Table 16: Image pixel flags used in spectral images"
+    start = next(i for i, t in enumerate(texts) if caption in t and i > 4)  # skip the contents pages
+    end = next(i for i in range(start, len(texts)) if "3.2.6 Dark Subtraction" in texts[i])
+    return list(range(start, end + 1))
+
+
+def supplement_table16(texts: list[str]) -> dict[str, int]:
+    """Name -> bit from the pages of Table 16 (their printed numbers equal the PDF page numbers)."""
+    text = "\n".join(texts[i] for i in table16_pages(texts))
     found = {}
     for name in F.FLAGS:
         if F.FLAGS[name].bit >= 32:
@@ -84,18 +98,23 @@ def main() -> int:
         if phrase not in squashed:
             problems.append(f"help page no longer contains the phrase {phrase!r}")
 
-    supp = supplement_table16(fetch(PDF_URL, "SPHEREx_Expsupp_QR.pdf"))
+    reader = pypdf.PdfReader(str(fetch(PDF_URL, PDF_NAME)))
+    texts = page_texts(reader)
+    pages16 = [i + 1 for i in table16_pages(texts)]
+    version = next((line for line in texts[0].splitlines() if line.startswith("Version")), "version line not found")
+    print(f"Supplement {version}; Table 16 on pages {pages16[0]} to {pages16[-1]}")
+    supp = supplement_table16(texts)
     expected_supp = {n: f.bit for n, f in F.FLAGS.items() if f.in_supp}
     for name in sorted(set(expected_supp) | set(supp)):
         if expected_supp.get(name) != supp.get(name):
             problems.append(f"supplement Table 16: code {expected_supp.get(name)} vs pdf {supp.get(name)} for {name}")
-    reader = pypdf.PdfReader(str(RAW / "SPHEREx_Expsupp_QR.pdf"))
-    p43 = (reader.pages[42].extract_text() or "").replace("\n", " ")
+    lists_page = next(i for i, t in enumerate(texts) if "Flags for background estimation masking" in t)
+    lists = " ".join(texts[lists_page : lists_page + 2]).replace("\n", " ")
     for name in F.BAD_PIXEL_NAMES:
         token = name.replace("_", " ")
-        if token not in p43 and name.replace("_", "") not in p43.replace(" ", ""):
-            problems.append(f"supplement p. 43 does not mention {name} in its flag lists")
-    whole = "\n".join(page.extract_text() or "" for page in reader.pages)
+        if token not in lists and name.replace("_", "") not in lists.replace(" ", ""):
+            problems.append(f"supplement pp. {lists_page + 1}-{lists_page + 2} do not mention {name} in the flag lists")
+    whole = "\n".join(texts)
     print("FIT_ERROR appears in the Supplement:", "FIT_ERROR" in whole or "FIT ERROR" in whole)
 
     if problems:
